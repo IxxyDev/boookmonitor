@@ -1,0 +1,118 @@
+{% extends 'books/base.html' %}
+
+{% block title %}
+    {% if search_query %}
+        Search: {{ search_query }} - BookMonitor
+    {% else %}
+        Book List - BookMonitor
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        {% if search_query %}
+            <h1>Search Results: "{{ search_query }}"</h1>
+            <p>
+                <a href="{% if request.GET.publisher %}?publisher={{ request.GET.publisher }}{% else %}{% url 'books:book_list' %}{% endif %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to all books
+                </a>
+            </p>
+        {% else %}
+            <h1>Latest Programming Books</h1>
+        {% endif %}
+
+        {% if selected_publisher %}
+            <h5 class="text-muted">Publisher: {{ selected_publisher.name }}</h5>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    {% for book in books %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="text-center p-2">
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" class="card-img-top book-cover" alt="{{ book.title }}">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center book-cover">
+                    <span class="text-muted">No cover</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ book.author }}</h6>
+                <p class="card-text">
+                    <small>
+                        <strong>Publisher:</strong> {{ book.publisher.name }}<br>
+                        <strong>Publication Date:</strong> {{ book.publication_date|date:"d.m.Y" }}
+                    </small>
+                </p>
+                {% if book.description %}
+                <p class="card-text">{{ book.description|truncatechars:100 }}</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2">
+                    <a href="{{ book.book_url }}" target="_blank" class="btn btn-outline-primary btn-sm">View Book</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            {% if search_query %}
+                No books found matching "{{ search_query }}".
+            {% else %}
+                No books available.
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}">First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">First</a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}">Next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}">Last</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Last</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

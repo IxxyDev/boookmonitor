@@ -47,12 +47,12 @@ celerybeat.pid
 *.swp
 *.swo
 
-# Проектные файлы
+# Project files
 oreilly_api_response.json
 oreilly_page.html
 *.html.json
 
-# Тестирование
+# Testing
 .coverage
 htmlcov/
 .pytest_cache/
@@ -61,16 +61,16 @@ htmlcov/
 .hypothesis/
 .coverage.*
 
-# Документация
+# Documentation
 docs/_build/
 site/
 
-# Логи и временные файлы
+# Logs and temporary files
 logs/
 tmp/
 temp/
 
-# Локальные файлы разработки
+# Local development files
 .env.local
 .env.development.local
 .env.test.local

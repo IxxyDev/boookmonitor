@@ -3,15 +3,15 @@ from django.utils import timezone
 
 
 class Publisher(models.Model):
-    """Модель для хранения информации об издательствах"""
-    name = models.CharField(max_length=100, verbose_name="Название издательства")
-    description = models.TextField(blank=True, verbose_name="Описание издательства")
-    website = models.URLField(blank=True, verbose_name="Веб-сайт")
-    logo_url = models.URLField(blank=True, verbose_name="URL логотипа")
+    """Model for storing publisher information"""
+    name = models.CharField(max_length=100, verbose_name="Publisher name")
+    description = models.TextField(blank=True, verbose_name="Publisher description")
+    website = models.URLField(blank=True, verbose_name="Website")
+    logo_url = models.URLField(blank=True, verbose_name="Logo URL")
 
     class Meta:
-        verbose_name = "Издательство"
-        verbose_name_plural = "Издательства"
+        verbose_name = "Publisher"
+        verbose_name_plural = "Publishers"
         ordering = ['name']
 
     def __str__(self):
@@ -19,21 +19,21 @@ class Publisher(models.Model):
 
 
 class Book(models.Model):
-    """Модель для хранения информации о книгах"""
-    title = models.CharField(max_length=255, verbose_name="Название книги")
-    author = models.CharField(max_length=255, verbose_name="Автор")
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name="books", verbose_name="Издательство")
-    description = models.TextField(blank=True, verbose_name="Описание книги")
-    cover_url = models.URLField(blank=True, verbose_name="URL обложки")
-    book_url = models.URLField(verbose_name="URL книги на сайте издательства")
-    publication_date = models.DateField(verbose_name="Дата публикации")
+    """Model for storing book information"""
+    title = models.CharField(max_length=255, verbose_name="Book title")
+    author = models.CharField(max_length=255, verbose_name="Author")
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name="books", verbose_name="Publisher")
+    description = models.TextField(blank=True, verbose_name="Book description")
+    cover_url = models.URLField(blank=True, verbose_name="Cover URL")
+    book_url = models.URLField(verbose_name="Book URL on publisher website")
+    publication_date = models.DateField(verbose_name="Publication date")
     isbn = models.CharField(max_length=20, blank=True, verbose_name="ISBN")
-    page_count = models.PositiveIntegerField(default=0, blank=True, verbose_name="Количество страниц")
-    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата добавления в систему")
+    page_count = models.PositiveIntegerField(default=0, blank=True, verbose_name="Page count")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Date added to system")
 
     class Meta:
-        verbose_name = "Книга"
-        verbose_name_plural = "Книги"
+        verbose_name = "Book"
+        verbose_name_plural = "Books"
         ordering = ['-publication_date']
         indexes = [
             models.Index(fields=['-publication_date']),
